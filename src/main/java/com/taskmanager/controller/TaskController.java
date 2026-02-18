@@ -25,22 +25,22 @@ public class TaskController {
     }
 
     @PostMapping
-    public TaskResponse create(TaskRequest request) {
+    public TaskResponse create(@RequestBody TaskRequest request) {
         return taskService.create(request);
     }
 
     @GetMapping("/{id}")
-    public TaskResponse getById(Long id) {
+    public TaskResponse getById(@PathVariable Long id) {
         return taskService.findById(id);
     }
 
     @PutMapping("/{id}")
-    public TaskResponse update(Long id, TaskRequest request) {
+    public TaskResponse update(@PathVariable Long id, @RequestBody TaskRequest request) {
         return taskService.update(id, request);
     }
 
     @DeleteMapping("/{id}")
-    public void delete(Long id) {
+    public void delete(@PathVariable Long id) {
         taskService.delete(id);
     }
 
