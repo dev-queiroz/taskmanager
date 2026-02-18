@@ -19,13 +19,21 @@ public class Task {
     @Column(columnDefinition = "TEXT")
     private String description;
 
-    @Column(nullable = false)
     private boolean completed = false;
 
-    @Column(nullable = false)
+    private LocalDateTime dueDate;
+
     private LocalDateTime createdAt = LocalDateTime.now();
 
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "user_id")
-//    private User user;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "project_id", nullable = false)
+    private Project project; // A tarefa agora faz parte de um projeto
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user; // Responsável pela tarefa
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "tenant_id", nullable = false)
+    private Tenant tenant; // Filtro de segurança SaaS
 }

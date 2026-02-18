@@ -30,6 +30,13 @@ public class User implements UserDetails {  // Implementa UserDetails pra Spring
     @ElementCollection(fetch = FetchType.EAGER)  // Roles carregadas sempre
     private List<Role> roles;  // Enum de roles (USER, ADMIN)
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "tenant_id", nullable = false)
+    private Tenant tenant;
+
+    @OneToMany(mappedBy = "user")
+    private List<Task> createdTasks;
+
     // Implementação de UserDetails (obrigatória)
     @Override
     public @NonNull Collection<? extends GrantedAuthority> getAuthorities() {
