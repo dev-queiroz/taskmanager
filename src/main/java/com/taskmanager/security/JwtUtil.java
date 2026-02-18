@@ -4,6 +4,8 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
+import org.jetbrains.annotations.Contract;
+import org.jspecify.annotations.NonNull;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -22,7 +24,8 @@ public class JwtUtil {
     @Value("${app.jwt.expiration}")
     private Long expiration;  // em ms
 
-    private SecretKey getSigningKey() {
+    @Contract(" -> new")
+    private @NonNull SecretKey getSigningKey() {
         return Keys.hmacShaKeyFor(secret.getBytes());  // Gera chave HMAC forte
     }
 
@@ -34,7 +37,7 @@ public class JwtUtil {
         return extractClaim(token, Claims::getExpiration);
     }
 
-    public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
+    public <T> T extractClaim(String token, @NonNull Function<Claims, T> claimsResolver) {
         final Claims claims = extractAllClaims(token);
         return claimsResolver.apply(claims);
     }
@@ -47,7 +50,7 @@ public class JwtUtil {
                 .getPayload();
     }
 
-    private Boolean isTokenExpired(String token) {
+    private @NonNull Boolean isTokenExpired(String token) {
         return extractExpiration(token).before(new Date());
     }
 

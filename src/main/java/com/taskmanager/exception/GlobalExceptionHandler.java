@@ -1,5 +1,6 @@
 package com.taskmanager.exception;
 
+import org.jspecify.annotations.NonNull;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -14,7 +15,7 @@ import java.util.NoSuchElementException;
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(NoSuchElementException.class)
-    public ResponseEntity<ErrorDetails> handleResourceNotFoundException(NoSuchElementException ex, WebRequest request) {
+    public ResponseEntity<ErrorDetails> handleResourceNotFoundException(@NonNull NoSuchElementException ex, @NonNull WebRequest request) {
         ErrorDetails errorDetails = new ErrorDetails(
                 LocalDateTime.now(),
                 ex.getMessage(),
@@ -24,7 +25,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ErrorDetails> handleGlobalException(Exception ex, WebRequest request) {
+    public ResponseEntity<ErrorDetails> handleGlobalException(@NonNull Exception ex, @NonNull WebRequest request) {
         ErrorDetails errorDetails = new ErrorDetails(
                 LocalDateTime.now(),
                 ex.getMessage(),
