@@ -1,5 +1,7 @@
 package com.taskmanager.entity;
 
+import com.taskmanager.entity.enums.Priority;
+import com.taskmanager.entity.enums.Status;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -9,31 +11,41 @@ import java.time.LocalDateTime;
 @Table(name = "tasks")
 @Data
 public class Task {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, length = 100)
+    @Column(nullable = false, length = 200)
     private String title;
 
     @Column(columnDefinition = "TEXT")
     private String description;
 
-    private boolean completed = false;
+    @Enumerated(EnumType.STRING)
+    private Status status = Status.TODO;
+
+    @Enumerated(EnumType.STRING)
+    private Priority priority = Priority.MEDIUM;
 
     private LocalDateTime dueDate;
 
+    @Column(updatable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "project_id", nullable = false)
-    private Project project; // A tarefa agora faz parte de um projeto
+    private LocalDateTime updatedAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    private User user; // Responsável pela tarefa
+    @JoinColumn(name = "created_by_id", nullable = false)
+    private User createdBy;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "tenant_id", nullable = false)
-    private Tenant tenant; // Filtro de segurança SaaS
+    private Tenant tenant;
+
+    // Pre-persist/update hooks
+    @PreUpdate
+    public void preUpdate() {
+        updatedAt = LocalDateTime.now();
+    }
 }

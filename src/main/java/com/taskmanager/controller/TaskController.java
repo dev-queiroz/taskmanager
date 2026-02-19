@@ -3,16 +3,16 @@ package com.taskmanager.controller;
 import com.taskmanager.dto.TaskRequest;
 import com.taskmanager.dto.TaskResponse;
 import com.taskmanager.service.TaskService;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/tasks")
 public class TaskController {
-    @Autowired
+
     private final TaskService taskService;
 
     public TaskController(TaskService taskService) {
@@ -25,32 +25,26 @@ public class TaskController {
     }
 
     @PostMapping
-    public TaskResponse create(@RequestBody TaskRequest request) {
-        return taskService.create(request);
-    }
+    public ResponseEntity<TaskResponse> create(@RequestBody TaskRequest request) {
+        TaskResponse response = taskService.create(request);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+        }
 
     @GetMapping("/{id}")
-    public TaskResponse getById(@PathVariable Long id) {
-        return taskService.findById(id);
+    public ResponseEntity<TaskResponse> getById(@PathVariable Long id) {
+        TaskResponse response = taskService.toResponse(taskService.findById(id));
+        return ResponseEntity.ok(response);
     }
 
     @PutMapping("/{id}")
-    public TaskResponse update(@PathVariable Long id, @RequestBody TaskRequest request) {
-        return taskService.update(id, request);
+    public ResponseEntity<TaskResponse> update(@PathVariable Long id, @RequestBody TaskRequest request) {
+        TaskResponse response = taskService.update(id, request);
+        return ResponseEntity.ok(response);
     }
 
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable Long id) {
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
         taskService.delete(id);
-    }
-
-    @GetMapping("/completed")
-    public List<TaskResponse> getByCompleted(boolean completed) {
-        return taskService.findByCompleted(completed);
-    }
-
-    @GetMapping("/date")
-    public List<TaskResponse> getByCreatedAt(LocalDateTime createdAt) {
-        return taskService.findByCreatedAt(createdAt);
+        return ResponseEntity.noContent().build();
     }
 }
