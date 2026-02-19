@@ -1,3 +1,5 @@
 package com.taskmanager.dto;
 
-public record AuthResponse(String token) {}
+public record AuthResponse(
+        String token
+) {}
