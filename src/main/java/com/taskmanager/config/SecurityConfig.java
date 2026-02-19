@@ -1,6 +1,7 @@
 package com.taskmanager.config;
 
 import com.taskmanager.security.JwtAuthenticationFilter;
+import com.taskmanager.tenant.TenantFilter;
 import org.jspecify.annotations.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -33,7 +34,8 @@ public class SecurityConfig {
                         .anyRequest().authenticated()  // Todo o resto precisa token
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))  // Sem sessões
-                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);  // Nosso filter antes do default
+                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)  // Nosso filter antes do default
+                .addFilterAfter(new TenantFilter(), JwtAuthenticationFilter.class);
 
         // Permite frames pro H2 console (se ainda usar)
         http.headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable));

@@ -4,6 +4,7 @@ import com.taskmanager.dto.TaskRequest;
 import com.taskmanager.dto.TaskResponse;
 import com.taskmanager.entity.Task;
 import com.taskmanager.repository.TaskRepository;
+import com.taskmanager.tenant.TenantContext;
 import org.jetbrains.annotations.Contract;
 import org.jspecify.annotations.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +24,9 @@ public class TaskService {
     }
 
     public List<TaskResponse> findAll() {
-        return taskRepository.findAll().stream()
+        Long tenantId = TenantContext.getCurrentTenant();
+        if (tenantId == null) throw new IllegalStateException("Tenant não identificado");
+        return taskRepository.findAllByTenantId(tenantId).stream()
                 .map(this::toResponse)
                 .collect(Collectors.toList());
     }

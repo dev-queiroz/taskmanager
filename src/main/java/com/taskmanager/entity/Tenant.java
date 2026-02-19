@@ -12,13 +12,11 @@ public class Tenant {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, unique = true)
-    private String name; // Ex: "ACME Corp"
+    @Column(nullable = false)
+    private String name;
 
-    @Column(unique = true)
-    private String slug; // Ex: "acme-corp" (para subdomínios ou URLs)
-
-    private boolean active = true;
+    @Column(unique = true, nullable = false)
+    private String domain; // Ex: empresa-a.taskmanager.com
 
     private LocalDateTime createdAt = LocalDateTime.now();
 }
