@@ -19,7 +19,7 @@ import java.util.function.Function;
 public class JwtUtil {
 
     @Value("${app.jwt.secret}")
-    private String secret;  // Vem do application.properties
+    private String secret;  // Vem do application.yml
 
     @Value("${app.jwt.expiration}")
     private Long expiration;  // em ms

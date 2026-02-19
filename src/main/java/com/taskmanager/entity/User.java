@@ -10,39 +10,34 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "users")
 @Data
-public class User implements UserDetails {  // Implementa UserDetails pra Spring Security usar diretamente
-
+public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(unique = true, nullable = false)
-    private String username;  // Ou email
+    private String username;  // email ou username
 
     @Column(nullable = false)
-    private String password;  // Hashed com BCrypt
+    private String password;
 
+    @ElementCollection(fetch = FetchType.EAGER)
     @Enumerated(EnumType.STRING)
-    @ElementCollection(fetch = FetchType.EAGER)  // Roles carregadas sempre
-    private List<Role> roles;  // Enum de roles (USER, ADMIN)
+    private List<Role> roles;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "tenant_id", nullable = false)
     private Tenant tenant;
 
-    @OneToMany(mappedBy = "user")
-    private List<Task> createdTasks;
-
-    // Implementação de UserDetails (obrigatória)
+    // UserDetails impl
     @Override
     public @NonNull Collection<? extends GrantedAuthority> getAuthorities() {
-        return roles.stream()
-                .map(role -> new SimpleGrantedAuthority(role.name()))
-                .toList();
+        return roles.stream().map(r -> new SimpleGrantedAuthority("ROLE_" + r.name())).collect(Collectors.toList());
     }
 
     @Override

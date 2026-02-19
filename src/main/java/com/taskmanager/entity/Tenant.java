@@ -2,6 +2,7 @@ package com.taskmanager.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
+
 import java.time.LocalDateTime;
 
 @Entity
@@ -12,11 +13,11 @@ public class Tenant {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String name;
 
-    @Column(unique = true, nullable = false)
-    private String domain; // Ex: empresa-a.taskmanager.com
+    @Column(unique = true)
+    private String subdomain;  // ex: empresa.tasksaas.com
 
     private LocalDateTime createdAt = LocalDateTime.now();
 }
